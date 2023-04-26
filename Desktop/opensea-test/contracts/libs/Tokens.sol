@@ -25,7 +25,6 @@ library Tokens {
         bytes32 ctype;
         bytes32 programHash;
         bytes32 digest;
-        address verifier;
         address attester;
         uint64[] output;
         uint64 mintTimestamp;
@@ -35,15 +34,18 @@ library Tokens {
         string sbtFigure;
     }
 
+   // todo: function sbt mint to a contract 
+
+
     function fillTokenOnChain(
         Token memory token,
-        uint64 time
+        uint64 time,
+        address realRecipient
     ) public pure returns (TokenOnChain memory tokenOnchain) {
-        tokenOnchain.recipient = token.recipient;
+        tokenOnchain.recipient = realRecipient;
         tokenOnchain.ctype = token.ctype;
         tokenOnchain.programHash = token.programHash;
         tokenOnchain.digest = token.digest;
-        tokenOnchain.verifier = token.verifier;
         tokenOnchain.attester = token.attester;
         tokenOnchain.output = token.output;
         tokenOnchain.issuanceTimestamp = token.issuanceTimestamp;

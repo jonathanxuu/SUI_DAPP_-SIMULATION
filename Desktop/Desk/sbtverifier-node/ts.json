@@ -1,0 +1,22 @@
+{
+  "outputs": {
+    "stack": [8, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "overflow_addrs": [0, 1]
+  },
+  "starkproof": {
+    "proof": {
+      "context": {
+        "trace_layout": {
+          "main_segment_width": 72,
+          "aux_segment_widths": [9],
+          "aux_segment_rands": [16],
+          "num_aux_segments": 1
+        },
+        "trace_length": 1024,
+        "trace_meta": [],
+        "field_modulus_bytes": [1, 0, 0, 0, 255, 255, 255, 255],
+        "options": { "num_queries": 27, "blowup_factor": 8 }
+      }
+    }
+  }
+}

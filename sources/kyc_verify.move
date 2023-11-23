@@ -64,7 +64,7 @@ module test_ccip_verify_package::kyc_verify {
     }
 
 
-    entry public fun verify_KYC(
+    public fun verify_KYC(
         value_kyc_status: u256,
         onChainAddr: address,
         // the DID address
@@ -163,8 +163,8 @@ module test_ccip_verify_package::kyc_verify {
         vector::append(&mut concatU8a, timestampU8a);
 
         // The publicKey of the server verifier(ed25519)
-        let pk = vector<u8>[0x77, 0xc0, 0x72, 0xb8, 0xa3, 0x84, 0xfd, 0x28, 0x02, 0x45, 0xad, 0x7b, 0xff, 0x75, 0x7f, 0x26, 0xa2, 0x7d, 0x1f, 0x6e, 0x9a, 0x14, 0x13, 0xdb, 0x67, 0xae, 0x22, 0x7c, 0x97, 0xd4, 0x46, 0x9c];
-       
+        let pk = vector<u8>[229, 137, 106,  40,  35, 226, 160, 123, 180,   6, 181, 162, 128, 245, 199, 181, 69, 233, 141, 192,   6, 116, 218,  58, 173, 181, 151, 183,  12, 196, 135, 7];
+
         let hashedMessage = std::hash::sha2_256(concatU8a);
 
         let verify = ed25519::ed25519_verify(&signature, &pk, &hashedMessage);
@@ -366,7 +366,7 @@ module test_ccip_verify_package::kyc_verify {
             );
             debug::print(&a);
         
-            let sig = vector<u8>[23,  80, 135, 243, 140, 252, 181, 223, 183, 209, 106, 192,  49,  98, 103, 224, 153,  28,  74, 169, 102, 144, 233, 114,  16, 232, 217, 241, 247, 211,  64,  73, 142, 2,  20,  62, 116, 162, 196,  98, 241, 214,  41,  93, 144, 180, 162, 192, 120,  26, 192, 162,  33, 135, 182, 90,  96,  78, 247, 252,  55, 145, 192, 6];
+            let sig = vector<u8>[54, 200,  48,  20, 187,  99,  62, 216, 137,  69, 204, 7,  79, 160, 152, 140,  57, 202,  28,  36, 179, 254, 58,  79,  60, 135, 171, 144,  41, 176, 253, 130,  95, 180, 253, 233,  37, 151,  58, 217,  73,  59, 131, 187, 99, 235, 236,  98,   8, 231, 112, 193,   7,  76, 196, 56, 163,  95,  33, 209,  38, 100,  73,   3];
 
             let verifyResult = verifyCCIPSignature(digest, 1700714355000, sig, 1700712764002);
 

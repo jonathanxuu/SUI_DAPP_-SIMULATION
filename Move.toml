@@ -1,8 +1,8 @@
 [package]
 name = "test_ccip_verify_package"
 version = "0.0.1"
-published-at = "0x5104ee429cce7d1dfbf0f4edb6bc661f13685cce80b6163999372e41d6b9af51" 
+published-at = "0x56a68bce259ba5fdbac507ed69b2c12ca185f7306b2fab29a810fd1a1fd123d9" 
 [dependencies]
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet" }
 [addresses]
-test_ccip_verify_package = "0x0"
+test_ccip_verify_package = "0x56a68bce259ba5fdbac507ed69b2c12ca185f7306b2fab29a810fd1a1fd123d9"

@@ -4,20 +4,20 @@ compiled_package_info:
   address_alias_instantiation:
     std: "0000000000000000000000000000000000000000000000000000000000000001"
     sui: "0000000000000000000000000000000000000000000000000000000000000002"
-    test_ccip_verify_package: "0000000000000000000000000000000000000000000000000000000000000000"
-  source_digest: E3E32451F2C669C037F21DFEF66962F25FA74442FECAD3D063BE116B9FA659CA
+    test_ccip_verify_package: 56a68bce259ba5fdbac507ed69b2c12ca185f7306b2fab29a810fd1a1fd123d9
+  source_digest: 57B4AF88CC12F731C1B86A5943B5189F8083E9F70710BF2E9789202D6B6EB64B
   build_flags:
-    dev_mode: false
-    test_mode: false
+    dev_mode: true
+    test_mode: true
     generate_docs: false
     generate_abis: false
     install_dir: ~
     force_recompilation: false
-    lock_file: "./Move.lock"
+    lock_file: ~
     additional_named_addresses: {}
     fetch_deps_only: false
     skip_fetch_latest_git_deps: false
-    default_flavor: sui
+    default_flavor: ~
     default_edition: ~
     deps_as_root: false
 dependencies:

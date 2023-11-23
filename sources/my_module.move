@@ -63,19 +63,20 @@ module my_first_package::my_module {
         attesterWhiteList.attesterWhiteList = m;
     }
 
+
     public fun verify_KYC(
         value_kyc_status: u256,
         // the DID address
+        onChainAddr: address,
         holderAddr: vector<u8>, 
         issuanceDate: vector<u8>, 
         expirationDate: vector<u8>, 
         ctypeHash: vector<u8>,
         signature: vector<u8>,
-        timestamp: u256,
+        timestamp: u64,
         verifierSig: vector<u8>,
         clock: &Clock,
         attesterList: &AttesterWhiteList,
-        ctx: &mut TxContext
     ) : u256 {
         // Only the vc is valid, return the digest
         let digest = verify_VC(
@@ -86,17 +87,17 @@ module my_first_package::my_module {
             ctypeHash,
             signature,
             attesterList,
-            ctx);
+            onChainAddr);
         
         let current_time = clock::timestamp_ms(clock);
 
         // If the vc's is already expired, abort with ErrorCode `42`
         assert!(bytes_to_u64(expirationDate) == 0 || bytes_to_u64(expirationDate) > current_time, 42);
 
-        let verifyResult = verifyCCIPSignature(digest, timestamp, verifierSig);
+        let verifyResult = verifyCCIPSignature(digest, timestamp, verifierSig, current_time);
 
-        // If the CCIP Signature is not valid, abort with ErrorCode `43`
-        assert!(verifyResult, 43);
+        // If the CCIP Signature is not valid, abort with ErrorCode `44`
+        assert!(verifyResult, 44);
         value_kyc_status
     }
 
@@ -109,10 +110,10 @@ module my_first_package::my_module {
         ctypeHash: vector<u8>,
         signature: vector<u8>,
         attesterWhiteList: &AttesterWhiteList,
-        ctx: &mut TxContext
+        onChainAddr: address
     ) : vector<u8> {
         let bfcPrefix = b"bfc";
-        let roothash = compute_roothash(value_kyc_status, bfcPrefix, tx_context::sender(ctx));
+        let roothash = compute_roothash(value_kyc_status, bfcPrefix, onChainAddr);
 
         //  ===========  OK!! calculate DIGEST =================
         let digest = compute_digest(roothash, holderAddr, issuanceDate, expirationDate, ctypeHash);
@@ -146,9 +147,15 @@ module my_first_package::my_module {
         roothash
     }
 
-    fun verifyCCIPSignature(digest: vector<u8>, timestamp: u256, signature: vector<u8>): bool{
+    fun verifyCCIPSignature(
+        digest: vector<u8>, 
+        timestamp: u64, 
+        signature: vector<u8>,
+        currentTimestamp: u64
+    ): bool{
+        assert!(currentTimestamp <= timestamp + 1000 * 60*5, 43);
         let networkU8a = b"bfc";
-        let timestampU8a = pack_u256(timestamp);
+        let timestampU8a = pack_u64(timestamp);
         let concatU8a = std::vector::empty<u8>(); 
 
         vector::append(&mut concatU8a, digest);
@@ -186,6 +193,12 @@ module my_first_package::my_module {
         vector::append(&mut ethSignedMessage, prefix);
         vector::append(&mut ethSignedMessage, digest);
         ethSignedMessage
+    }
+
+    fun pack_u64(value_to_pack: u64) : vector<u8> {
+        let value_vector = bcs::to_bytes(&value_to_pack);
+        std::vector::reverse(&mut value_vector);
+        value_vector
     }
 
     fun pack_u256(value_to_pack: u256) : vector<u8> {
@@ -349,17 +362,22 @@ module my_first_package::my_module {
                 ctypeHash,
                 signature,
                 &whitelist,
-                test_scenario::ctx(scenario),
+                admin,
             );
             debug::print(&a);
         
-            let sig = vector<u8>[115, 197, 121,  84, 208, 150,  42,  22, 165,  33, 107, 74,  69, 194,  66, 143, 125,  47, 137,   7, 191, 251, 15, 234,  28,  64, 137,  95, 184, 215, 251,  41, 166, 244,  51, 104, 166,  91, 160, 248, 112, 247,  47, 171, 10, 121, 113, 101,   7,  34, 217, 219, 185, 177, 215, 124,  16, 116, 190,  24, 226, 144, 135, 6];
+            let sig = vector<u8>[93,  13, 178, 206, 173,  39,  38,  86, 182, 240, 112, 146, 213, 111, 113,  78,  47,  83,  12, 181, 197, 254, 222,  91,  86,  23,  49,  42, 243, 189, 212, 133,  54, 111, 113, 144, 135, 197, 222, 165,  70,  81,  43, 110, 173, 247, 210, 223, 243,  58, 214,  61, 162,  61, 230, 226,  99, 103, 216,  67,  52, 205, 234,   5];
 
-            let verifyResult = verifyCCIPSignature(digest, 1697708475764, sig);
+            let verifyResult = verifyCCIPSignature(digest, 1697708475764, sig, 1697708475766);
+            let timestampU8a = pack_u64(1697708475764);
+            debug::print(&timestampU8a);
+
+
             debug::print(&verifyResult);
 
             let kyc_verify = verify_KYC(
                 1,
+                admin,
                 holder_addr,
                 issuanceDate,
                 vector<u8>[0x00],
@@ -368,8 +386,8 @@ module my_first_package::my_module {
                 1697708475764,
                 sig,
                 &clock,
-                &whitelist,
-                test_scenario::ctx(scenario));
+                &whitelist
+                );
 
             debug::print(&kyc_verify);
             clock::destroy_for_testing(clock);

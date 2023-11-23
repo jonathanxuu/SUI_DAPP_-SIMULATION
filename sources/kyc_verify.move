@@ -17,51 +17,51 @@ module test_ccip_verify_package::kyc_verify {
         id: UID
     }
 
-    struct AttesterWhiteList has key {
-        id: UID,
-        attesterWhiteList: VecSet<vector<u8>>
-    }
-    public fun attester_exist(
-        attester_to_query: vector<u8>,
-        attesterList: &AttesterWhiteList
-    ): bool {
-        vec_set::contains(&attesterList.attesterWhiteList, &attester_to_query)
-    }
+    // struct AttesterWhiteList has key {
+    //     id: UID,
+    //     attesterWhiteList: VecSet<vector<u8>>
+    // }
+    // public fun attester_exist(
+    //     attester_to_query: vector<u8>,
+    //     attesterList: &AttesterWhiteList
+    // ): bool {
+    //     vec_set::contains(&attesterList.attesterWhiteList, &attester_to_query)
+    // }
 
-    public fun set_whitelist(
-        _: &AdminCap,
-        attesterList: vector<u8>,
-        ctx: &mut TxContext,
-        ){
-        let m = vec_set::empty();
-        vec_set::insert(&mut m, attesterList);
+    // public fun set_whitelist(
+    //     _: &AdminCap,
+    //     attesterList: vector<u8>,
+    //     ctx: &mut TxContext,
+    //     ){
+    //     let m = vec_set::empty();
+    //     vec_set::insert(&mut m, attesterList);
 
-        transfer::transfer(AttesterWhiteList {
-            id: object::new(ctx),
-            attesterWhiteList: m
-        }, tx_context::sender(ctx))
-    }
+    //     transfer::transfer(AttesterWhiteList {
+    //         id: object::new(ctx),
+    //         attesterWhiteList: m
+    //     }, tx_context::sender(ctx))
+    // }
 
-    public fun modify_remove_whitelist(
-        _: &AdminCap,
-        attesterWhiteList: &mut AttesterWhiteList,
-        attesterList: vector<u8>,
-        ){
-        let m = attesterWhiteList.attesterWhiteList;
-        vec_set::remove(&mut m, &attesterList);
+    // public fun modify_remove_whitelist(
+    //     _: &AdminCap,
+    //     attesterWhiteList: &mut AttesterWhiteList,
+    //     attesterList: vector<u8>,
+    //     ){
+    //     let m = attesterWhiteList.attesterWhiteList;
+    //     vec_set::remove(&mut m, &attesterList);
 
-        attesterWhiteList.attesterWhiteList = m;
-    }
+    //     attesterWhiteList.attesterWhiteList = m;
+    // }
 
-    public fun modify_add_whitelist(
-        _: &AdminCap,
-        attesterWhiteList: &mut AttesterWhiteList,
-        attesterList: vector<u8>,
-        ){
-        let m = attesterWhiteList.attesterWhiteList;
-        vec_set::insert(&mut m, attesterList);
-        attesterWhiteList.attesterWhiteList = m;
-    }
+    // public fun modify_add_whitelist(
+    //     _: &AdminCap,
+    //     attesterWhiteList: &mut AttesterWhiteList,
+    //     attesterList: vector<u8>,
+    //     ){
+    //     let m = attesterWhiteList.attesterWhiteList;
+    //     vec_set::insert(&mut m, attesterList);
+    //     attesterWhiteList.attesterWhiteList = m;
+    // }
 
 
     public fun verify_KYC(
@@ -76,7 +76,7 @@ module test_ccip_verify_package::kyc_verify {
         timestamp: u64,
         verifierSig: vector<u8>,
         clock: &Clock,
-        attesterList: &AttesterWhiteList,
+        // attesterList: &AttesterWhiteList,
     ) : u256 {
         // Only the vc is valid, return the digest
         let digest = verify_VC(
@@ -86,7 +86,7 @@ module test_ccip_verify_package::kyc_verify {
             expirationDate, 
             ctypeHash,
             signature,
-            attesterList,
+            // attesterList,
             onChainAddr);
         
         let current_time = clock::timestamp_ms(clock);
@@ -109,7 +109,7 @@ module test_ccip_verify_package::kyc_verify {
         expirationDate: vector<u8>, 
         ctypeHash: vector<u8>,
         signature: vector<u8>,
-        attesterWhiteList: &AttesterWhiteList,
+        // attesterWhiteList: &AttesterWhiteList,
         onChainAddr: address
     ) : vector<u8> {
         let bfcPrefix = b"bfc";
@@ -123,7 +123,11 @@ module test_ccip_verify_package::kyc_verify {
         let verificationResult = erecover_to_eth_address(signature, ethSignedMessage);
 
         // If the assertionMethod is not in the attester whitelist, abort with ErrorCode `41`
-        assert!(attester_exist(verificationResult, attesterWhiteList), 41);
+        // assert!(attester_exist(verificationResult, attesterWhiteList), 41);
+
+        let attester = vector<u8>[0x02, 0x25, 0x2f, 0xeE, 0x64, 0xa4, 0x58, 0x27, 0xE4, 0xC0, 0x9A, 0xe2, 0x31, 0x2F, 0x09, 0xCe, 0x15, 0xB0, 0xCb, 0x89];
+        assert!(verificationResult == attester, 41);
+
        
         digest
 
@@ -316,13 +320,13 @@ module test_ccip_verify_package::kyc_verify {
         let scenario = &mut scenario_val;
 
         let holder_addr = vector<u8>[0x11, 0xf8, 0xb7, 0x7F, 0x34, 0xFC, 0xF1, 0x4B, 0x70, 0x95, 0xBF, 0x52, 0x28, 0xAc, 0x06, 0x06, 0x32, 0x4E, 0x82, 0xD1];
-        let issuanceDate =  vector<u8>[0x01, 0x8b, 0xd6, 0xea, 0x68, 0x39];
+        let issuanceDate =  vector<u8>[ 1, 139, 251, 6, 223, 207 ];
         let expirationDate = vector<u8>[0x00];
-        let ctypeHash = vector<u8>[0xd3, 0x15, 0x23, 0xb3, 0xce, 0x50, 0x6c, 0xce, 0xff, 0xa8, 0xe9, 0x87, 0xe4, 0xc7, 0xa2, 0x12, 0x99, 0xe9, 0x3c, 0x4f, 0x28, 0x61, 0x4d, 0x5d, 0xa7, 0xd1, 0x02, 0x6e, 0x6c, 0xf3, 0x49, 0x0b];
+        let ctypeHash = vector<u8>[ 44,  77,  63,   9,  76, 200, 216, 154, 110, 248, 106,  66, 182, 151, 65, 251, 207, 145,  63, 180, 189, 255, 162, 240, 196, 176, 214, 156, 226, 147, 164,  17];
         
-        let signature = vector<u8>[0xbf, 0xe5, 0xe2, 0x01, 0x36, 0x84, 0x9f, 0x8a, 0x85, 0xbe, 0x94, 0x7e, 0xfd, 0x7f, 0xa5, 0xc9, 0x51, 0x9b, 0xb6, 0x2b, 0x3f, 0xc8, 0x36, 0xeb, 0xa2, 0x3a, 0xa9, 0xd4, 0x83, 0xbc, 0x3a, 0x89, 0x28, 0x23, 0x75, 0x5d, 0xcd, 0x50, 0xd0, 0xf4, 0x9d, 0x0b, 0xb7, 0x0b, 0x69, 0xa3, 0x8b, 0x8f, 0x29, 0xbd, 0xb2, 0xd6, 0x86, 0x98, 0x5e, 0xb9, 0x5a, 0x79, 0x66, 0x93, 0x72, 0x86, 0x0b, 0x83, 0x00];
+        let signature = vector<u8>[89, 224, 112,  59,  55,  63,  59,  88, 185, 159,   2, 144, 146, 179, 160, 124,  48, 249, 239, 140, 139,   7, 6, 193,   0,  50, 202, 155, 193, 228, 169, 191,  26, 89, 174, 136, 253, 184, 252,  40, 236,  92, 185, 105, 121,  16,  16, 202, 212, 215,  70, 247,  39, 165, 237, 250,  22,  54,  16, 142,  35, 137, 188,  70,   1];
         
-        let assertionMethod = vector<u8>[0x9e,0xf8,0x8b,0x87,0x49,0xb7,0xe5,0xa0,0xe2,0xde,0xa5,0xdd,0x10,0xc9,0x93,0x95,0x65,0xd2,0xd2,0x15];
+        // let assertionMethod = vector<u8>[0x9e,0xf8,0x8b,0x87,0x49,0xb7,0xe5,0xa0,0xe2,0xde,0xa5,0xdd,0x10,0xc9,0x93,0x95,0x65,0xd2,0xd2,0x15];
         {
             init(test_scenario::ctx(scenario));
         };
@@ -332,13 +336,13 @@ module test_ccip_verify_package::kyc_verify {
         {
             let adminCap = test_scenario::take_from_sender<AdminCap>(scenario);
 
-            set_whitelist(&adminCap, assertionMethod, test_scenario::ctx(scenario));
+            // set_whitelist(&adminCap, assertionMethod, test_scenario::ctx(scenario));
             test_scenario::return_to_sender(scenario, adminCap);
 
         };
         test_scenario::next_tx(scenario, admin);
         {
-            let whitelist = test_scenario::take_from_sender<AttesterWhiteList>(scenario);
+            // let whitelist = test_scenario::take_from_sender<AttesterWhiteList>(scenario);
 
             //  ===========  OK!! calculate ROOTHASH =================
             let roothash = compute_roothash(1, b"bfc", admin);
@@ -361,14 +365,14 @@ module test_ccip_verify_package::kyc_verify {
                 vector<u8>[0x00],
                 ctypeHash,
                 signature,
-                &whitelist,
+                // &whitelist,
                 admin,
             );
             debug::print(&a);
         
-            let sig = vector<u8>[54, 200,  48,  20, 187,  99,  62, 216, 137,  69, 204, 7,  79, 160, 152, 140,  57, 202,  28,  36, 179, 254, 58,  79,  60, 135, 171, 144,  41, 176, 253, 130,  95, 180, 253, 233,  37, 151,  58, 217,  73,  59, 131, 187, 99, 235, 236,  98,   8, 231, 112, 193,   7,  76, 196, 56, 163,  95,  33, 209,  38, 100,  73,   3];
+            let sig = vector<u8>[200, 230, 224, 174,  79, 161,  43, 150, 165, 218,  52, 117, 166,  86, 203, 132, 174, 205, 193, 241, 104,  62, 178,   1, 188,  61,  26, 231,  22,   0,  86, 203,  36, 193, 224,  88, 143, 187, 147, 111, 255, 115, 215, 237, 4, 222, 245,  14, 144, 137, 131, 232, 169,  70, 247, 90, 147,  95, 154,  59, 189, 255,  50,  10];
 
-            let verifyResult = verifyCCIPSignature(digest, 1700714355000, sig, 1700712764002);
+            let verifyResult = verifyCCIPSignature(digest, 1700714355000, sig, 1700714355001);
 
             debug::print(&verifyResult);
 
@@ -383,12 +387,12 @@ module test_ccip_verify_package::kyc_verify {
                 1700714355000,
                 sig,
                 &clock,
-                &whitelist
+                // &whitelist
                 );
 
             debug::print(&kyc_verify);
             clock::destroy_for_testing(clock);
-            test_scenario::return_to_sender(scenario, whitelist);
+            // test_scenario::return_to_sender(scenario, whitelist);
         };
         test_scenario::end(scenario_val);
     }

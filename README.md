@@ -1,9 +1,7 @@
-# zCloak CCIP Verify module
+# SUI_DAPP_SIMULATION
 
-## For admin (need AdminCap)
-- `set_whitelist`: First set whiteList of attester
-- `modify_remove_whitelist`: Remove certain attester
-- `modify_add_whitelist`: Add attester
+## function `callz`
 
-## For user
-- `verify_KYC`: check the kyc status
+Call the `verify_KYC` function in zCloak CCIP Verify contract.
+
+If the function is successfully called(with no error), a `KYC Record` Object will be sent to the on-chain-addr

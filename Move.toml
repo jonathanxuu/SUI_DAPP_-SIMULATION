@@ -1,8 +1,11 @@
 [package]
-name = "test_ccip_verify_package"
+name = "dapp"
 version = "0.0.1"
-published-at = "0x89eb7867c7d860a62c7824747aad5e4e615757c9afb42a35c189f3da752739d9" 
+
 [dependencies]
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet" }
+
+test_ccip_verify_package = {local = "../../to_upload/test_package/"}
+
 [addresses]
-test_ccip_verify_package = "0x89eb7867c7d860a62c7824747aad5e4e615757c9afb42a35c189f3da752739d9"
+dapp = "0x0"

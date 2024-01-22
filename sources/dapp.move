@@ -1,5 +1,5 @@
 module dapp::dapp_module {
-   use test_ccip_verify_package::kyc_verify::{verify_KYC};
+   use test_ccip_verify_package::kyc_verify::{verify_KYC, AttesterWhiteList};
 
    use sui::tx_context::{Self, TxContext};
    use sui::clock::{Self, Clock};
@@ -24,6 +24,8 @@ module dapp::dapp_module {
         timestamp: u64,
         verifierSig: vector<u8>,
         clock: &Clock,
+        attesterList: &AttesterWhiteList,
+
         ctx: &mut TxContext
     ) {
       verify_KYC(
@@ -37,6 +39,7 @@ module dapp::dapp_module {
          timestamp,
          verifierSig,
          clock,
+         attesterList
         );
          
       let current_time = clock::timestamp_ms(clock);

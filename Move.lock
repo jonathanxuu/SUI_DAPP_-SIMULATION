@@ -29,3 +29,8 @@ source = { local = "../../to_upload/test_package" }
 dependencies = [
   { name = "Sui" },
 ]
+
+[move.toolchain-version]
+compiler-version = "1.17.0"
+edition = "legacy"
+flavor = "sui"

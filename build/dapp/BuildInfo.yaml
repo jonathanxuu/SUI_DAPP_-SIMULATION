@@ -5,22 +5,24 @@ compiled_package_info:
     dapp: "0000000000000000000000000000000000000000000000000000000000000000"
     std: "0000000000000000000000000000000000000000000000000000000000000001"
     sui: "0000000000000000000000000000000000000000000000000000000000000002"
-    test_ccip_verify_package: 89eb7867c7d860a62c7824747aad5e4e615757c9afb42a35c189f3da752739d9
-  source_digest: F3D5EFBFEDD3568381527C5E1E8B1E138DC6B06992ACB291078BC7281DD9FAFC
+    test_ccip_verify_package: aa897749dbc76f383218a9594538f429422ad1f008655413ae23d08f776d7cc5
+  source_digest: CCAE64586B3B68F87871BA1BE4D5332E5F729FE9AC606BD3AA4E25352884A5BD
   build_flags:
     dev_mode: false
     test_mode: false
     generate_docs: false
-    generate_abis: false
     install_dir: ~
     force_recompilation: false
     lock_file: "./Move.lock"
-    additional_named_addresses: {}
     fetch_deps_only: false
     skip_fetch_latest_git_deps: false
     default_flavor: sui
     default_edition: ~
     deps_as_root: false
+    silence_warnings: false
+    warnings_are_errors: false
+    additional_named_addresses: {}
+    no_lint: false
 dependencies:
   - MoveStdlib
   - Sui
